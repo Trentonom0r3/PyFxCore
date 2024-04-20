@@ -17,6 +17,7 @@ namespace py = pybind11;
 
 namespace pyfx {
 
+	PYFXAPI std::atomic<bool> isRunning;
 
 	PYFXAPI void InitializePython();
 
