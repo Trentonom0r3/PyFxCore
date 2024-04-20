@@ -9,5 +9,12 @@
 
 // add headers that you want to pre-compile here
 #include "framework.h"
+#ifdef PYFXLIB_EXPORTS
+#define PYFXAPI __declspec(dllexport)
+#else
+#define PYFXAPI __declspec(dllimport)
+#endif
 
+PYFXAPI void pyfx_init();
+//define dll export
 #endif //PCH_H
