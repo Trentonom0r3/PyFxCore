@@ -8,18 +8,22 @@
 PYFXAPI void pyfx::InitializePython()
 {
 	try {
+		if (pyfx::isRunning) {
+			return; // already running
+		}
 		std::thread t([]() {
-			py::initialize_interpreter();
+			py::initialize_interpreter(); // initialize python interpreter
 
-			pyfx::isRunning = true;
-			while (pyfx::isRunning) {
-				py::gil_scoped_release release;
-				std::this_thread::sleep_for(std::chrono::seconds(1));
+			pyfx::isRunning = true; // set running flag
+
+			while (pyfx::isRunning) { // run until flag is set to false
+				py::gil_scoped_release release; // release GIL
+				std::this_thread::sleep_for(std::chrono::seconds(1)); // sleep for 1 second
 			}
 
-			py::finalize_interpreter();
+			py::finalize_interpreter(); // finalize python interpreter when done
 			});
-		t.detach();
+		t.detach(); // detach thread
 	}
 	catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;
@@ -31,6 +35,6 @@ PYFXAPI void pyfx::InitializePython()
 
 void pyfx::FinalizePython()
 {
-	pyfx::isRunning = false;
+	pyfx::isRunning = false; // set running flag to false
 }
 
